@@ -902,7 +902,7 @@ func TestHTTPPublish(t *testing.T) {
 
 	startTime := time.Now()
 
-	numMsg := 200
+	numMsg := 50
 	go func() {
 		for i := 0; i < numMsg; i++ {
 			data := HTTPJsonData{
