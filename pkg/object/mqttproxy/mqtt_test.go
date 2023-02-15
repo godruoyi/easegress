@@ -900,6 +900,8 @@ func TestHTTPPublish(t *testing.T) {
 		t.Errorf("subscribe qos1 error %s", token.Error())
 	}
 
+	startTime := time.Now()
+
 	numMsg := 200
 	go func() {
 		for i := 0; i < numMsg; i++ {
@@ -921,11 +923,14 @@ func TestHTTPPublish(t *testing.T) {
 	ans := map[string]struct{}{}
 	for len(ans) < numMsg {
 		msg := <-subscribeCh
+		fmt.Println("get msg....", time.Now().Sub(startTime).Seconds())
 		if msg.topic != "test" {
 			t.Errorf("wrong topic received")
 		}
 		ans[msg.payload] = struct{}{}
 	}
+
+	fmt.Println("time elapsed 1:", time.Now().Sub(startTime).Seconds())
 
 	done := make(chan struct{})
 	go func() {
@@ -938,9 +943,13 @@ func TestHTTPPublish(t *testing.T) {
 		}
 	}()
 
+	fmt.Println("time elapsed 2:", time.Now().Sub(startTime).Seconds())
+
 	client.Disconnect(200)
 	srv.shutdown()
 	close(done)
+
+	fmt.Println("time elapsed 3:", time.Now().Sub(startTime).Seconds())
 }
 
 func TestHTTPTransfer(t *testing.T) {
